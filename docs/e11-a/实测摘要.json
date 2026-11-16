@@ -1,0 +1,111 @@
+{
+  "identity": {
+    "name": "陈佶哲",
+    "student_id": "241880606",
+    "group": "A17",
+    "email": "241880606@smail.nju.edu.cn"
+  },
+  "repo": "/root/devops-students/241880606/buildchecker",
+  "branch": "student/241880606/e11-e12-a",
+  "image": "course-e11e12:241880606",
+  "sample_directory": "work/a-20261116-231738-289153",
+  "cases_directory": "work/a-cases-20261116-231738-289153",
+  "e8e10_preserved": true,
+  "cases": {
+    "passed": true,
+    "source": "course-generated exercise commits",
+    "body_commit": "d914b206a368eb7c90b9a7b886c8d8df50c6ef42",
+    "include_commit": "eddd3663aa8108466dc5f95d17ed0c28d3939fea",
+    "body_reused": [
+      "main.o",
+      "helper.o"
+    ],
+    "include_refreshed": [
+      "main.o",
+      "helper.o"
+    ],
+    "gcc_incremental_matches_fresh_scan": true,
+    "stale_report_rejected": true,
+    "scope": "GCC cache cases only; use E11-A run for strace full-check comparison"
+  },
+  "api": {
+    "passed": true,
+    "job_id": "job-37639e254a474704b11e7fde4bd28fc0",
+    "trace_id": "trace-28161881b8f048fc9e876b803528220e",
+    "same_key_same_job": true,
+    "changed_input_returns_409": true,
+    "invalid_mode_returns_400": true,
+    "path_escape_returns_404": true,
+    "all_download_headers_match_manifest": true,
+    "verification": {
+      "verification": "PASSED",
+      "method": "offline saved-evidence verification",
+      "job_id": "job-37639e254a474704b11e7fde4bd28fc0",
+      "trace_id": "trace-28161881b8f048fc9e876b803528220e",
+      "base_commit": "c0e0a785f601cd11b4ce1100cbd670a8c2a20b73",
+      "target_commit": "96f04539f7d22021fb4335498d122d14c75a90ba",
+      "verified_artifact_count": 85,
+      "baseline_graph_matches_cache": true,
+      "incremental_matches_full": true,
+      "findings": [
+        {
+          "type": "MISSING",
+          "target": "main.o",
+          "dependency": "config.h"
+        },
+        {
+          "type": "MISSING",
+          "target": "main.o",
+          "dependency": "extra.h"
+        },
+        {
+          "type": "REDUNDANT",
+          "target": "main.o",
+          "dependency": "unused.h"
+        }
+      ],
+      "added": [
+        [
+          "MISSING",
+          "main.o",
+          "extra.h"
+        ]
+      ],
+      "refreshed": [
+        "main.o",
+        "helper.o"
+      ],
+      "reused": []
+    }
+  },
+  "sample": {
+    "status": "SUCCEEDED",
+    "job_id": "job-cc084ed0957e48e9ad5963ed91e3f331",
+    "trace_id": "trace-29acc6075be14c489e1f648f45df9f0d",
+    "base_commit": "c0e0a785f601cd11b4ce1100cbd670a8c2a20b73",
+    "target_commit": "96f04539f7d22021fb4335498d122d14c75a90ba"
+  },
+  "body": {
+    "status": "SUCCEEDED",
+    "job_id": "job-d6100e199f70470485e1e60ed4c09770",
+    "trace_id": "trace-4d7da80e95e54a5ea6d2ecafcfb8cbda",
+    "base_commit": "a4f0470ecfaed4dbdddd19eebf05fd194b087815",
+    "target_commit": "d914b206a368eb7c90b9a7b886c8d8df50c6ef42"
+  },
+  "tests": {
+    "original": 10,
+    "added": 5,
+    "passed": 15
+  },
+  "pending": [
+    "A17真实维护C/Make项目接入",
+    "与B组执行完整E12修复链"
+  ],
+  "regressions": {
+    "e7_unit_passed": 6,
+    "e8e10_profile_passed": 8,
+    "buildchecker_component_passed": 15,
+    "source_secret_scan": "PASSED",
+    "git_diff_check": "PASSED"
+  }
+}

@@ -1,0 +1,31 @@
+name: E11 A integration
+on: [push, pull_request, workflow_dispatch]
+permissions:
+  contents: read
+jobs:
+  integration:
+    name: e11-a-integration
+    runs-on: ubuntu-24.04
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v7.0.1
+      - name: Configure identity and build course image
+        run: |
+          git config --local user.name 241880606
+          git config --local user.email 241880606@smail.nju.edu.cn
+          docker build --build-arg BASE_IMAGE=python:3.13-slim@sha256:f82c96458eedc847b233e582eb31336f4954b39cae020b6dcf5b3ed0e5cbcd74 -f labs/e11e12/environment/services/buildchecker/Dockerfile -t course-e11e12:241880606 labs/e11e12/environment
+      - name: Test contracts and run A integration
+        shell: bash
+        run: |
+          set -euo pipefail
+          python3 run_e11e12.py test
+          python3 run_e11e12.py prepare
+          python3 run_e11e12.py run --request data/integration-sample/e11-a.json --out work/ci-e11-a
+          python3 scripts/verify_a.py work/ci-e11-a --out work/ci-a-verification.json
+          docker run --rm --network none --user "$(id -u):$(id -g)" -e HOME=/tmp -v "$PWD:/course" -w /course course-e11e12:241880606 python3 scripts/a_cases.py --out /course/work/ci-a-cases
+      - uses: actions/upload-artifact@v7.0.2
+        if: always()
+        with:
+          name: e11-a-evidence-${{ github.run_id }}
+          path: work/
+          retention-days: 14
