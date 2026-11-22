@@ -1,0 +1,20 @@
+{
+  "provider": "A17",
+  "student_id": "241880606",
+  "name": "陈佶哲",
+  "consumer": "B17",
+  "system_repository": "https://github.com/Cc-06/A-buildchecker-lab",
+  "source": "Course labs/e8e10/lab.py fixture(mixed)",
+  "source_fixture_commit": "02a2b5986dc503b9f3df31f5f901fca6224414cd",
+  "adaptation": [
+    "tested helper cancelling calculation",
+    "extra.h used in main expression",
+    "student regression script and provenance"
+  ],
+  "base": "4680bd14ef183208fded5f4a46232e0c2dbac34e",
+  "target": "7223dd26553595ec9b4e7859438197b99fb900bd",
+  "expected_output": "1",
+  "header_change_output": "2",
+  "fault": "main.o omits config.h and extra.h dependencies",
+  "limits": "two C sources, explicit Make rules; Linux gcc/make; build timeout600s; run only isolated snapshots"
+}

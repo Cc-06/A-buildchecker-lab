@@ -1,15 +1,21 @@
 """E8-E10 teaching profile: explicit C/Make rules, GCC dependency observation."""
-import argparse, csv, difflib, json, re, shutil, subprocess, time
+import argparse, csv, difflib, json, os, re, shutil, signal, subprocess, time
 from pathlib import Path
 
 def save(p, data):
     p=Path(p); p.parent.mkdir(parents=True,exist_ok=True)
     p.write_text(json.dumps(data,ensure_ascii=False,indent=2)+'\n')
 
-def run(cmd, cwd):
-    p=subprocess.run(cmd,cwd=cwd,text=True,capture_output=True,timeout=30)
-    if p.returncode: raise ValueError('COMMAND_FAILED '+repr(cmd)+'\n'+p.stdout+p.stderr)
-    return p.stdout
+def run(cmd, cwd, timeout=30):
+    p=subprocess.Popen(cmd,cwd=cwd,text=True,stdout=subprocess.PIPE,stderr=subprocess.PIPE,start_new_session=True)
+    try:
+        stdout,stderr=p.communicate(timeout=timeout)
+    except subprocess.TimeoutExpired:
+        os.killpg(p.pid,signal.SIGKILL)
+        p.communicate()
+        raise
+    if p.returncode: raise ValueError('COMMAND_FAILED '+repr(cmd)+'\n'+stdout+stderr)
+    return stdout
 
 def fixture(p, style='direct'):
     p.mkdir(parents=True)
@@ -94,7 +100,7 @@ def patch(p,report):
     diff=''.join(difflib.unified_diff(original.splitlines(True),changed.splitlines(True),fromfile='a/Makefile',tofile='b/Makefile'))
     return diff,edits
 
-def validate(p, patchfile, evidence, fail_test=False):
+def validate(p, patchfile, evidence, fail_test=False, expected_output="1", header_change_output="2"):
     evidence.mkdir(parents=True); before=(p/'Makefile').read_bytes()
     sandbox=evidence/'sandbox'; shutil.copytree(p,sandbox,ignore=shutil.ignore_patterns('.git','*.o','app'))
     run(['git','init','-b','main'],sandbox)
@@ -106,11 +112,11 @@ def validate(p, patchfile, evidence, fail_test=False):
         run(['git','apply','--check',str(patchfile.resolve())],sandbox); checks['patch_applies']=True
         run(['git','apply',str(patchfile.resolve())],sandbox)
         log=run(['make','clean'],sandbox)+run(['make','app'],sandbox);(evidence/'build.log').write_text(log);checks['build']=True
-        output=run(['./app'],sandbox).strip(); checks['test']=output==('99' if fail_test else '1')
+        output=run(['./app'],sandbox).strip(); checks['test']=output==('99' if fail_test else expected_output)
         # Real header-change build checks the originally broken incremental behavior.
         time.sleep(1.05); (sandbox/'config.h').write_text('#define VALUE 2\n')
         (evidence/'incremental.log').write_text(run(['make','app'],sandbox))
-        checks['header_change']=run(['./app'],sandbox).strip()=='2'
+        checks['header_change']=run(['./app'],sandbox).strip()==header_change_output
         recheck=scan(sandbox); save(evidence/'recheck.json',recheck)
         checks['no_missing']=not any(f['type']=='MISSING' for f in recheck['findings'])
     except (ValueError,subprocess.TimeoutExpired) as ex: error=str(ex)

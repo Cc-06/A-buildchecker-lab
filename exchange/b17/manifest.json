@@ -1,0 +1,48 @@
+{
+  "provider": "B17",
+  "student_id": "251880498",
+  "consumer": "A17",
+  "source": {
+    "source_repo": "https://git.nju.edu.cn/241880652/devops17.git",
+    "source_base_commit": "9e8d3062bb02c4ae3d0505ec14a71b96f0ad124f",
+    "source_base_path": "E3/mdfixer-sample/Makefile.before",
+    "source_target_commit": "b130945ed79aae9c50904d1a7072c6a23b9a6fbd",
+    "source_target_path": "E3/mdfixer-sample/styles/hybrid/Makefile",
+    "adapted_base_commit": "2e06166c88083dad8077e4696e3d08214d11a121",
+    "adapted_target_commit": "568f6f06b3546b8ea7440f9a5c52075a3676741e",
+    "adaptation": [
+      "Reuse each revision's main.c, config.h, and unused.h byte for byte.",
+      "Keep the original main.o prerequisites; adapt the build to the required two-object layout.",
+      "Add a neutral helper.c and a broken/candidate Dockerfile pair for DRAFT.",
+      "Check B17's VALUE=1 and VALUE=2 output without editing its program."
+    ],
+    "fault": "The target's main.o does not declare config.h; modifying it leaves a stale executable."
+  },
+  "base": "2e06166c88083dad8077e4696e3d08214d11a121",
+  "target": "568f6f06b3546b8ea7440f9a5c52075a3676741e",
+  "expected_output": "VALUE=1",
+  "header_change_output": "VALUE=2",
+  "build_timeout": 900,
+  "build_command": "make app",
+  "run_command": "./app",
+  "system_commit_at_packaging": "23dfd698878e2f244cf6eea278fa05f67541cbfd",
+  "branch": "main",
+  "project_scope": "main.c/helper.c/config.h; explicit Make rules; missing config.h dependency",
+  "status": "Ready for A17 independent execution; cross-group result pending",
+  "validated_system_implementation_commit": "74a6a740283ae5151273ecbc16ab7983d0ed6631",
+  "validated_system_code_sha256": {
+    "run_e11e12.py": "70645538da0cfcdf4e35b2629b5303b6ed951a300ff74ab05888b943bec66e0c",
+    "labs/e11e12/pipeline.py": "68cfc18d55c021159462517505d2cc994fb733e84d98519eb11f7b90988e292d",
+    "scripts/secret_scan.py": "ba60965358aea572f11aed3dbcbeb7d9721958d98771a5e258a6da09fd32ed84",
+    "labs/e13e14/finalize_delivery.py": "1d7417b56694cab50bf996cf3b296ee8380d9aeb241883bf96fd9b14445e3efe",
+    "labs/e13e14/handoff_a_to_b.py": "42c3dae65cd22bd4cdd66617bf31050a694ed0b76c12ab9206ef9f3d32a02f6c",
+    "labs/e13e14/orchestrate.py": "dbab2956203ffe727554956edece0836087c8060e70fea6013bee683fa44f5a5",
+    "labs/e13e14/prepare_b17_exchange.py": "e41187d6dbe43824747049b1bbc8d6baa50af749b68f7c5b97aa200146b08fd0",
+    "labs/e13e14/rollback_probe.py": "091650cee5b7af756d71563abf37ebaa11c428f8ed401b7a8ca57a6ad94de098",
+    "labs/e13e14/run_local_preflight.py": "a9b0583c7b1e74176515f7c1b4f00b5386b53773555c974ce4ecb8f34eda6ef2",
+    "labs/e13e14/run_teacher_cases.py": "287f9437d52c6af43922de172e76f23e0564ddf85efdbbafc3b56c98afe98723",
+    "labs/e13e14/scan_runtime_logs.py": "1304657c1e51f1b4c2772fa7e104e04102e84a8be3d4277af708b8f519c45c34",
+    "labs/e13e14/service.py": "3967010869b92e919925693aefa8863f7bbb8399d24b34dc621756f6ac645105",
+    "labs/e13e14/verify_evidence.py": "6389cabcf42193ad14a5c61fdb948a05559e6068a795f7c0948cedc87c01a1ad"
+  }
+}
