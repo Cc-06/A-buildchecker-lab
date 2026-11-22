@@ -46,9 +46,7 @@ jobs:
             -t course-e11e12:999999999 labs/e11e12/environment
           python3 run_e11e12.py prepare
           python3 labs/e13e14/prepare_a17_exchange.py
-          git clone exchange/b17/project.bundle data/e13-b17-251880498/repo
-          cp exchange/b17/candidate.Dockerfile data/e13-b17-251880498/
-          cp exchange/b17/request-e14.json data/e13-b17-251880498/
+          python3 labs/e13e14/prepare_ci_b17.py
       - name: Start four services and run E2E fixture
         run: |
           set -euo pipefail
@@ -56,7 +54,9 @@ jobs:
           docker compose -f labs/e13e14/compose.yaml -p e14-ci up -d --wait
           python3 labs/e13e14/orchestrate.py --request data/integration-sample/e12.json --out work/ci-e14
           python3 labs/e13e14/orchestrate.py --request data/e13-b17-251880498/request-e14.json --out work/ci-e14-b17
-          python3 labs/e13e14/scan_runtime_logs.py work/ci-e14
+          docker run --rm --user 0:0 --network host -v "$PWD:/course" -w /course course-e11e12:999999999 python3 labs/e13e14/probe_gates.py --success /course/work/ci-e14-b17 --out /course/work/ci-gates
+          docker run --rm --user 0:0 -v /var/run/docker.sock:/var/run/docker.sock -v "$PWD:/course" -w /course course-e11e12:999999999 python3 labs/e13e14/probe_timeout.py --out /course/work/ci-runtime-timeout
+          python3 labs/e13e14/scan_runtime_logs.py work
           docker compose -f labs/e13e14/compose.yaml -p e14-ci logs --no-color > work/ci-e14-services.log
           python3 labs/e13e14/scan_runtime_logs.py work/ci-e14-services.log
       - name: Stop only this Compose project

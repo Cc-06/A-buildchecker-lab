@@ -5,6 +5,7 @@ import subprocess
 from pathlib import Path
 import sys
 import tempfile
+import time
 import unittest
 from unittest.mock import patch as mock
 
@@ -24,6 +25,9 @@ class ExchangeRegressions(unittest.TestCase):
             pid=int((root/'child.pid').read_text())
             status=Path('/proc')/str(pid)/'stat'
             # An unreaped zombie has exited and cannot continue work.
+            deadline=time.monotonic()+2
+            while status.exists() and status.read_text().split()[2]!='Z' and time.monotonic()<deadline:
+                time.sleep(0.01)
             self.assertTrue(not status.exists() or status.read_text().split()[2]=='Z')
 
     def test_external_report_hash_checked_before_repair(self):

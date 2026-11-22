@@ -22,7 +22,9 @@ def main():
     broken=fixture/'Dockerfile.broken'
     broken.write_text(broken.read_text().replace('CMD ["./app"]',command))
     candidate=out/'candidate.Dockerfile'
-    candidate.write_text((ROOT/'data/integration-sample/candidate.Dockerfile').read_text().replace('CMD ["./app"]',command))
+    original=ROOT/'data/integration-sample/candidate-A17-local.Dockerfile'
+    if not original.exists():original=ROOT/'data/integration-sample/candidate.Dockerfile'
+    candidate.write_text(original.read_text().replace('CMD ["./app"]',command))
     before=subprocess.check_output(['docker','ps','-q','--no-trunc'],text=True).splitlines()
     result=auto_build(fixture,candidate,out/'runtime','unused',timeout=300,verify_timeout=0.25)
     cid=(out/'runtime/verify-container-id.txt').read_text().strip()
