@@ -1,0 +1,10 @@
+{
+  "mode": "e11-a",
+  "repo": "/course/data/e13-b17-251880498/repo",
+  "base": "2e06166c88083dad8077e4696e3d08214d11a121",
+  "target": "568f6f06b3546b8ea7440f9a5c52075a3676741e",
+  "candidate": "/course/data/e13-b17-251880498/candidate.Dockerfile",
+  "expected_output": "VALUE=1",
+  "header_change_output": "VALUE=2",
+  "build_timeout": 900
+}

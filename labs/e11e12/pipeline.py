@@ -122,7 +122,8 @@ def execute(request, out, job_id=None):
         else:
             # E11-B still consumes a fixed MD input, separately from A's live output.
             fixed=Path(request['fixed_report'])
-            envelope=json.loads(fixed.read_text(encoding='utf-8'))
+            envelope=(load_artifact(fixed,request['fixed_report_sha256'])
+                      if 'fixed_report_sha256' in request else json.loads(fixed.read_text(encoding='utf-8')))
             check_envelope(envelope,target_sha,'fixed-md')
             current=envelope['data']
             if current.get('commit') != target_sha:
@@ -141,7 +142,9 @@ def execute(request, out, job_id=None):
             patchfile=out/'candidate.patch';patchfile.write_text(diff,encoding='utf-8')
             save(out/'repair-plan.json',edits)
             stage('repair',target_sha,{'edits':edits,'input_report':artifact(out/(md_envelope['kind']+'.json'),out,job_id)},[patchfile,out/'repair-plan.json'])
-            verdict=validate(target,patchfile,out/'validation')
+            verdict=validate(target,patchfile,out/'validation',
+                             expected_output=request.get('expected_output','1'),
+                             header_change_output=request.get('header_change_output','2'))
             if not verdict['accepted']:
                 raise Failure('REPAIR_REJECTED',str(verdict))
             final=full(target,out/'final-full')
