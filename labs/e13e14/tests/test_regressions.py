@@ -25,10 +25,15 @@ class ExchangeRegressions(unittest.TestCase):
             pid=int((root/'child.pid').read_text())
             status=Path('/proc')/str(pid)/'stat'
             # An unreaped zombie has exited and cannot continue work.
+            def exited():
+                try:
+                    return status.read_text().split()[2]=='Z'
+                except (FileNotFoundError,ProcessLookupError):
+                    return True
             deadline=time.monotonic()+2
-            while status.exists() and status.read_text().split()[2]!='Z' and time.monotonic()<deadline:
+            while not exited() and time.monotonic()<deadline:
                 time.sleep(0.01)
-            self.assertTrue(not status.exists() or status.read_text().split()[2]=='Z')
+            self.assertTrue(exited())
 
     def test_external_report_hash_checked_before_repair(self):
         with tempfile.TemporaryDirectory() as temp:
